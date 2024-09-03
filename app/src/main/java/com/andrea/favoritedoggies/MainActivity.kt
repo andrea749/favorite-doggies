@@ -7,41 +7,42 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
+import com.andrea.favoritedoggies.ui.navigation.AppNavGraph
 import com.andrea.favoritedoggies.ui.theme.FavoriteDoggiesTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
+            val navController = rememberNavController()
             FavoriteDoggiesTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
-                }
+                MainScreen(
+                    navController = navController,
+                    modifier = Modifier
+                )
             }
         }
     }
 }
 
 @Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    FavoriteDoggiesTheme {
-        Greeting("Android")
+fun MainScreen(
+    navController: NavHostController,
+    modifier: Modifier = Modifier,
+    ) {
+    Scaffold(modifier = modifier.fillMaxSize())
+    { innerPadding ->
+        AppNavGraph(
+            navController = navController,
+            modifier = Modifier.padding(innerPadding).fillMaxSize()
+        )
     }
 }
