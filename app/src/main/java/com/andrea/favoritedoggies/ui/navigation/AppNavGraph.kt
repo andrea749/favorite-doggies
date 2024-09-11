@@ -16,7 +16,7 @@ fun AppNavGraph(
     navController: NavHostController,
     modifier: Modifier = Modifier,
     ) {
-    NavHost(navController, startDestination = FavoritesPickerNavItem.route) {
+    NavHost(navController, startDestination = ImagesNavItem.route) {
         composable(ImagesNavItem.route) {
             ImagesScreen(navToFavoritesPickerScreen = { navController.navigate(FavoritesPickerNavItem.route) }, modifier = modifier)
         }

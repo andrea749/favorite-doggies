@@ -7,6 +7,7 @@ import com.andrea.favoritedoggies.data.DataStoreRepository
 import com.andrea.favoritedoggies.data.DogRepository
 import com.andrea.favoritedoggies.data.models.Breed
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -20,6 +21,7 @@ import javax.inject.Inject
 class FavoritesPickerViewModel @Inject constructor(
     private val imagesRepository: DogRepository,
     private val dataStoreRepository: DataStoreRepository,
+    private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
 ): ViewModel() {
     private val userPreferencesFlow = dataStoreRepository.getFavoriteBreeds()
     private val _breedsUiState = MutableStateFlow<BreedsUIState>(BreedsUIState.Loading)
@@ -39,7 +41,7 @@ class FavoritesPickerViewModel @Inject constructor(
     @VisibleForTesting
     fun getBreeds() {
         viewModelScope.launch {
-            withContext(Dispatchers.IO) {
+            withContext(dispatcher) {
                 val result = imagesRepository.getAllBreeds()
                 if (result.isEmpty()) {
                     _breedsUiState.value = BreedsUIState.Error

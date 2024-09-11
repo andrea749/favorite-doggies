@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -55,6 +56,7 @@ fun ImagesScreen(
         } else {
             ImageCarousel(
                 imgUrls = imgUrls,
+                getNewImagePaths = viewModel::getNewImagePaths,
                 modifier = Modifier.weight(0.8f),
             )
         }
@@ -64,7 +66,8 @@ fun ImagesScreen(
                 .wrapContentHeight()
                 .padding(horizontal = 30.dp, vertical = 10.dp)
                 ,
-            onClick = navToFavoritesPickerScreen,
+//            onClick = navToFavoritesPickerScreen,
+            onClick = { viewModel.refreshPaths() },
             ) {
             Text(text = "Add Favorites")
         }
@@ -91,8 +94,13 @@ fun CarouselTitle(text: String, modifier: Modifier = Modifier) {
 @Composable
 fun ImageCarousel(
     imgUrls: List<String>,
+    getNewImagePaths: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val listState = rememberLazyListState()
+    if (listState.canScrollForward.not()) {
+        getNewImagePaths()
+    }
     Column(
         modifier = modifier
             .padding(vertical = 16.dp),
@@ -102,6 +110,7 @@ fun ImageCarousel(
             modifier = modifier
                 .padding(top = 16.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
+            state = listState,
         ) {
             items(imgUrls) {
                 ImageCard(imgUrl = it)
